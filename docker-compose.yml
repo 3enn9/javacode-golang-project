@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - config.env
+    command: ["sh", "-c", "sleep 10 && ./wallet-service"]
+    depends_on:
+      - db
+
+  db:
+    restart: always
+    image: postgres:15
+    container_name: postgres_wallet
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: asd228asd
+      POSTGRES_DB: golang_wallet
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    command: ["postgres"]
+
+volumes:
+  postgres_data:
