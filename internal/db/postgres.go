@@ -12,7 +12,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var ErrInsufficientFunds = errors.New("not enough money")
+var ErrNotEnoughtMoney = errors.New("not enough money")
 
 func InitDB() (*sql.DB, error) {
 
@@ -147,7 +147,7 @@ func Withdraw(database *sql.DB, walletID string, amount float64) error {
     }
 
     if currentBalance < amount {
-        return ErrInsufficientFunds
+        return ErrNotEnoughtMoney
     }
 
     updateQuery := `UPDATE wallets SET balance = balance - $1 WHERE id = $2`

@@ -26,7 +26,7 @@ var (
 	ErrInvalidUUID         = errors.New("invalid wallet ID")
 	ErrInvalidOperation    = errors.New("invalid operation type")
 	ErrInvalidAmount       = errors.New("amount must be greater than zero")
-	ErrInsufficientFunds   = errors.New("insufficient funds")
+	ErrNotEnoughtMoney   = errors.New("not enought money")
 	ErrWalletNotFound      = sql.ErrNoRows
 )
 
@@ -70,8 +70,8 @@ func WalletOperationHandler(database *sql.DB) http.HandlerFunc {
 		}
 
 		if err != nil {
-			if errors.Is(err, db.ErrInsufficientFunds) {
-				http.Error(w, "Insufficient funds", http.StatusBadRequest)
+			if errors.Is(err, db.ErrNotEnoughtMoney) {
+				http.Error(w, "Not enought money", http.StatusBadRequest)
 			} else if errors.Is(err, sql.ErrNoRows) {
 				http.Error(w, "Wallet not found", http.StatusNotFound)
 			} else {

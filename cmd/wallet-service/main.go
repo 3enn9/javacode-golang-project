@@ -28,21 +28,6 @@ func main() {
     }
 
 
-	// id := uuid.New().String()
-
-	// wallet := model.Wallet{
-	// 	ID:      id,
-	// 	Balance: 100,
-	// }
-
-
-	// err = db.CreateWallet(database, wallet)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// 	log.Println("Wallet creation test completed.")
-
 	http.HandleFunc("/api/v1/wallet", handler.WalletOperationHandler(database))
 	http.HandleFunc("/api/v1/wallets/", handler.GetBalanceHandler(database))
 
