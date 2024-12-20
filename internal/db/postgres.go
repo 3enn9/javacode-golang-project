@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -93,7 +94,11 @@ func GetBalance(database *sql.DB, walletID string) (float64, error) {
 
 
 func Deposit(database *sql.DB, walletID string, amount float64) error {
-    tx, err := database.Begin()
+    txOptions := &sql.TxOptions{
+        Isolation: sql.LevelSerializable,
+    }
+
+    tx, err := database.BeginTx(context.Background(), txOptions)
     if err != nil {
         return fmt.Errorf("failed to begin transaction: %w", err)
     }
@@ -110,7 +115,6 @@ func Deposit(database *sql.DB, walletID string, amount float64) error {
     }
 
     rowsAffected, err := result.RowsAffected()
-
     if err != nil {
         return fmt.Errorf("failed to get affected rows: %w", err)
     }
@@ -126,7 +130,11 @@ func Deposit(database *sql.DB, walletID string, amount float64) error {
 }
 
 func Withdraw(database *sql.DB, walletID string, amount float64) error {
-    tx, err := database.Begin()
+    txOptions := &sql.TxOptions{
+        Isolation: sql.LevelSerializable,
+    }
+
+    tx, err := database.BeginTx(context.Background(), txOptions)
     if err != nil {
         return fmt.Errorf("failed to begin transaction: %w", err)
     }
@@ -141,7 +149,7 @@ func Withdraw(database *sql.DB, walletID string, amount float64) error {
     err = tx.QueryRow(checkBalanceQuery, walletID).Scan(&currentBalance)
     if err != nil {
         if err == sql.ErrNoRows {
-            return sql.ErrNoRows 
+            return sql.ErrNoRows
         }
         return fmt.Errorf("failed to fetch balance: %w", err)
     }
